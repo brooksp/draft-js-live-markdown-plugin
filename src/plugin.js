@@ -9,6 +9,12 @@ import {
 import { OrderedSet, Repeat, List } from 'immutable';
 import createHeadingDecorator from './decorators/createHeadingDecorator';
 
+const customStyleMap = {
+  STRIKETHROUGH: {
+    textDecoration: 'line-through'
+  }
+};
+
 const createMarkdownDecoratorsPlugin = function() {
   return {
     decorators: [createHeadingDecorator()],
@@ -30,7 +36,8 @@ const createMarkdownDecoratorsPlugin = function() {
       );
       newEditorState = EditorState.forceSelection(newEditorState, selection);
       return newEditorState;
-    }
+    },
+    customStyleMap: customStyleMap
   };
 };
 
