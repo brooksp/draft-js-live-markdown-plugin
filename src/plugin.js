@@ -7,7 +7,17 @@ import {
   CharacterMetadata
 } from 'draft-js';
 import { OrderedSet, Repeat, List } from 'immutable';
+
+// Inline style handlers
+import createBoldStyleStrategy from './inline-styles/createBoldStyleStrategy';
+import createItalicStyleStrategy from './inline-styles/createItalicStyleStrategy';
+import createStrikethroughStyleStrategy from './inline-styles/createStrikethroughStyleStrategy';
+
+// Block level decorators
 import createHeadingDecorator from './decorators/createHeadingDecorator';
+
+// Utils
+import findRangesWithRegex from './utils/findRangesWithRegex';
 
 const customStyleMap = {
   STRIKETHROUGH: {
@@ -41,70 +51,10 @@ const createMarkdownDecoratorsPlugin = function() {
   };
 };
 
-const findRangesWithRegex = (text, regex) => {
-  let ranges = [];
-  let matches;
-
-  do {
-    matches = regex.exec(text);
-    if (matches) {
-      ranges.push([matches.index, matches.index + matches[0].length - 1]);
-    }
-  } while (matches);
-
-  return ranges;
-};
-
-const boldDelimiters = ['**', '__', '***', '___'];
-const boldStyleStrategy = {
-  style: 'BOLD',
-  delimiters: boldDelimiters,
-  find: text => {
-    // should return an array of arrays containing start and end indices for
-    // ranges of text that should have the style applied
-    const boldRegex = /(\*\*\*|___)(.+?)(\*\*\*|___)|(\*\*|__)(.+?)(\*\*|__)/g;
-    const boldRanges = findRangesWithRegex(text, boldRegex);
-    return boldRanges;
-  }
-};
-
-const italicDelimiters = ['*', '_', '***', '___'];
-const italicStrategy = {
-  style: 'ITALIC',
-  delimiters: italicDelimiters,
-  find: text => {
-    const asteriskDelimitedRegex =
-      '(?<!\\*)(\\*)(?!\\*)(.+?)(?<!\\*)\\*(?!\\*)'; // *italic*
-    const underscoreDelimitedRegex = '(?<!_)(_)(?!_)(.+?)(?<!_)_(?!_)'; // _italic_
-    const strongEmphasisRegex = '(\\*\\*\\*|___)(.+?)(\\*\\*\\*|___)'; // ***bolditalic*** ___bolditalic___
-    const boldWrappedAsteriskRegex =
-      '(?<=\\*\\*)(\\*)(?!\\*)(.*?[^\\*]+)(?<!\\*)\\*(?![^\\*]\\*)|(?<!\\*)(\\*)(?!\\*)(.*?[^\\*]+)(?<!\\*)\\*(?=\\*\\*)'; // ***italic* and bold** **bold and *italic***
-    const boldWrappedUnderscoreRegex =
-      '(?<=__)(_)(?!_)(.*?[^_]+)(?<!_)_(?![^_]_)|(?<!_)(_)(?!_)(.*?[^_]+)(?<!_)_(?=__)'; // ___italic_ and bold__ __bold and _italic___
-    const italicRegex = new RegExp(
-      `${asteriskDelimitedRegex}|${underscoreDelimitedRegex}|${strongEmphasisRegex}|${boldWrappedAsteriskRegex}|${boldWrappedUnderscoreRegex}`,
-      'g'
-    );
-    const italicRanges = findRangesWithRegex(text, italicRegex);
-    return italicRanges;
-  }
-};
-
-const strikethroughDelimiters = ['~'];
-const strikethroughStrategy = {
-  style: 'STRIKETHROUGH',
-  delimiters: strikethroughDelimiters,
-  find: text => {
-    const strikethroughRegex = /(~~)(.+?)(~~)/g;
-    const strikethroughRanges = findRangesWithRegex(text, strikethroughRegex);
-    return strikethroughRanges;
-  }
-};
-
 const inlineStyleStrategies = [
-  boldStyleStrategy,
-  italicStrategy,
-  strikethroughStrategy
+  createBoldStyleStrategy(),
+  createItalicStyleStrategy(),
+  createStrikethroughStyleStrategy()
 ];
 
 const mapInlineStyles = block => {
