@@ -22,6 +22,15 @@ import findRangesWithRegex from './utils/findRangesWithRegex';
 const customStyleMap = {
   STRIKETHROUGH: {
     textDecoration: 'line-through'
+  },
+  'BOLD-DELIMITER': {
+    opacity: 0.4
+  },
+  'ITALIC-DELIMITER': {
+    opacity: 0.4
+  },
+  'STRIKETHROUGH-DELIMITER': {
+    opacity: 0.4
   }
 };
 
@@ -57,19 +66,30 @@ const inlineStyleStrategies = [
   createStrikethroughStyleStrategy()
 ];
 
+// Maps inline styles to the provided ContentBlock's CharacterMetadata list based
+// on the plugin's inline style strategies
 const mapInlineStyles = block => {
   // This will be called upon any change that has the potential to effect the styles
   // of a content block.
   // Find all of the ranges that should have styles applied to them (i.e. all bold,
   // italic, or strikethrough delimited ranges of the block).
   const blockText = block.getText();
+
+  // Create a list of empty CharacterMetadata to map styles to
   let characterMetadataList = List(
     Repeat(CharacterMetadata.create(), blockText.length)
   );
+
+  // Evaluate block text with each style strategy and apply styles to matching
+  // ranges of text and delimiters
   inlineStyleStrategies.forEach(strategy => {
-    const ranges = strategy.find(blockText);
-    ranges.forEach(range => {
-      for (let i = range[0]; i <= range[1]; i++) {
+    const styleRanges = strategy.findStyleRanges(blockText);
+    const delimiterRanges = strategy.findDelimiterRanges
+      ? strategy.findDelimiterRanges(blockText, styleRanges)
+      : [];
+
+    styleRanges.forEach(styleRange => {
+      for (let i = styleRange[0]; i <= styleRange[1]; i++) {
         const styled = CharacterMetadata.applyStyle(
           characterMetadataList.get(i),
           strategy.style
@@ -77,13 +97,24 @@ const mapInlineStyles = block => {
         characterMetadataList = characterMetadataList.set(i, styled);
       }
     });
+
+    delimiterRanges.forEach(delimiterRange => {
+      for (let i = delimiterRange[0]; i <= delimiterRange[1]; i++) {
+        const styledDelimiter = CharacterMetadata.applyStyle(
+          characterMetadataList.get(i),
+          strategy.delimiterStyle
+        );
+        characterMetadataList = characterMetadataList.set(i, styledDelimiter);
+      }
+    });
   });
 
-  const newBlock = block.set('characterList', characterMetadataList);
-
-  // Convert the style map to an array of CharacterMetadata
   // Apply the array of CharacterMetadata to the content block
-  return newBlock;
+  return block.set('characterList', characterMetadataList);
+};
+
+const findDelimiterRanges = (text, delimiter) => {
+  const regex = new RegExp(delimiter);
 };
 
 const findArrayIntersection = (arr1, arr2) => {
@@ -92,59 +123,6 @@ const findArrayIntersection = (arr1, arr2) => {
   });
 };
 
-const maintainInlineStyles = editorState => {
-  // get the current block
-  const selection = editorState.getSelection();
-  const blockKey = selection.getStartKey();
-  const block = editorState.getCurrentContent().getBlockForKey(blockKey);
-  // get block text
-  const blockText = block.getText();
-  // scan with matching strategies
-  const boldStrategy = /\*\*([^(?:**)]+)\*\*/g;
-  let matches;
-  let newEditorState = editorState;
-  do {
-    matches = boldStrategy.exec(blockText);
-    if (matches) {
-      // apply styles accordingly
-      newEditorState = applyInlineStyle(editorState, matches, 'BOLD');
-    }
-  } while (matches);
-
-  return newEditorState;
-};
-
-const applyInlineStyle = (editorState, matches, style) => {
-  const currentContent = editorState.getCurrentContent();
-  const selection = editorState.getSelection();
-  const key = selection.getStartKey();
-  const { index } = matches;
-  const focusOffset = index + matches[0].length;
-  const wordSelection = SelectionState.createEmpty(key).merge({
-    anchorOffset: index,
-    focusOffset
-  });
-  let newContentState = Modifier.applyInlineStyle(
-    currentContent,
-    wordSelection,
-    style
-  );
-  let newEditorState = EditorState.push(
-    editorState,
-    newContentState,
-    'change-inline-style'
-  );
-  const styleOverride = OrderedSet([]);
-  newEditorState = EditorState.forceSelection(
-    newEditorState,
-    editorState.getSelection()
-  );
-  newEditorState = EditorState.setInlineStyleOverride(
-    newEditorState,
-    styleOverride
-  );
-  return EditorState.forceSelection(newEditorState, editorState.getSelection());
-};
 const handleBeforeInput = (character, editorState, setEditorState) => {
   // By default the Draft editor looks to the left of the cursor and applies
   // those styles to newly inserted text. This is bad for our markdown
