@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { EditorState, ContentState } from 'draft-js';
 import Editor from 'draft-js-plugins-editor';
-import createMarkdownDecoratorsPlugin from 'draft-js-markdown-decorators-plugin';
+import createLiveMarkdownPlugin from 'draft-js-live-markdown-plugin';
 
 const initialContentState = ContentState.createFromText('');
 const initialEditorState = EditorState.createWithContent(initialContentState);
 
-const plugins = [createMarkdownDecoratorsPlugin()];
+const plugins = [createLiveMarkdownPlugin()];
 
 export default class DemoEditor extends Component {
   state = {

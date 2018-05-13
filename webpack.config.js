@@ -2,11 +2,11 @@ const path = require('path');
 
 const DIST_DIR = path.join(__dirname, 'dist');
 const SRC_DIR = path.join(__dirname, 'src');
-const PLUGIN_ENTRY = path.join(SRC_DIR, 'plugin');
+const PLUGIN_ENTRY = path.join(SRC_DIR, 'index');
 const DEMO_DIR = path.join(__dirname, 'demo');
 const DEMO_ENTRY = path.join(DEMO_DIR, 'src', 'scripts', 'main');
 const DEMO_PUBLIC_DIR = path.join(DEMO_DIR, 'public', 'scripts');
-const PLUGIN_DIR = path.join(__dirname, 'src', 'plugin');
+const PLUGIN_DIR = path.join(__dirname, 'src', 'index');
 
 module.exports = [
   {

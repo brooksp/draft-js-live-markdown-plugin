@@ -23,28 +23,54 @@ const customStyleMap = {
   STRIKETHROUGH: {
     textDecoration: 'line-through'
   },
+  'STRIKETHROUGH-DELIMITER': {
+    opacity: 0.4,
+    textDecoration: 'none'
+  },
   'BOLD-DELIMITER': {
     opacity: 0.4
   },
   'ITALIC-DELIMITER': {
     opacity: 0.4
-  },
-  'STRIKETHROUGH-DELIMITER': {
-    opacity: 0.4
   }
 };
 
-const createMarkdownDecoratorsPlugin = function() {
+const createLiveMarkdownPlugin = function(config = {}) {
+  const {
+    inlineStyleStrategies = [
+      createBoldStyleStrategy(),
+      createItalicStyleStrategy(),
+      createStrikethroughStyleStrategy()
+    ]
+  } = config;
+
   return {
     decorators: [createHeadingDecorator()],
     onChange: (editorState, { setEditorState }) => {
+      // Maintain the inline styles after changes are made
       const selection = editorState.getSelection();
       const blockKey = selection.getStartKey();
       const block = editorState.getCurrentContent().getBlockForKey(blockKey);
-      const newBlock = mapInlineStyles(block);
       const contentState = editorState.getCurrentContent();
       const blockMap = contentState.getBlockMap();
-      const newBlockMap = blockMap.set(blockKey, newBlock);
+
+      const newBlock = mapInlineStyles(block, inlineStyleStrategies);
+      let newBlockMap = blockMap.set(blockKey, newBlock);
+
+      // If enter was pressed (or the block was otherwise split) we must maintain
+      // styles in the previous block as well
+      const lastChangeType = editorState.getLastChangeType();
+      if (lastChangeType === 'split-block') {
+        const newPrevBlock = mapInlineStyles(
+          contentState.getBlockBefore(blockKey),
+          inlineStyleStrategies
+        );
+        newBlockMap = newBlockMap.set(
+          contentState.getKeyBefore(blockKey),
+          newPrevBlock
+        );
+      }
+
       const newContentState = contentState.merge({
         blockMap: newBlockMap
       });
@@ -54,21 +80,16 @@ const createMarkdownDecoratorsPlugin = function() {
         'insert-characters'
       );
       newEditorState = EditorState.forceSelection(newEditorState, selection);
+
       return newEditorState;
     },
     customStyleMap: customStyleMap
   };
 };
 
-const inlineStyleStrategies = [
-  createBoldStyleStrategy(),
-  createItalicStyleStrategy(),
-  createStrikethroughStyleStrategy()
-];
-
 // Maps inline styles to the provided ContentBlock's CharacterMetadata list based
 // on the plugin's inline style strategies
-const mapInlineStyles = block => {
+const mapInlineStyles = (block, strategies) => {
   // This will be called upon any change that has the potential to effect the styles
   // of a content block.
   // Find all of the ranges that should have styles applied to them (i.e. all bold,
@@ -82,39 +103,46 @@ const mapInlineStyles = block => {
 
   // Evaluate block text with each style strategy and apply styles to matching
   // ranges of text and delimiters
-  inlineStyleStrategies.forEach(strategy => {
+  strategies.forEach(strategy => {
     const styleRanges = strategy.findStyleRanges(blockText);
     const delimiterRanges = strategy.findDelimiterRanges
       ? strategy.findDelimiterRanges(blockText, styleRanges)
       : [];
 
-    styleRanges.forEach(styleRange => {
-      for (let i = styleRange[0]; i <= styleRange[1]; i++) {
-        const styled = CharacterMetadata.applyStyle(
-          characterMetadataList.get(i),
-          strategy.style
-        );
-        characterMetadataList = characterMetadataList.set(i, styled);
-      }
-    });
+    characterMetadataList = applyStyleRangesToCharacterMetadata(
+      strategy.style,
+      styleRanges,
+      characterMetadataList
+    );
 
-    delimiterRanges.forEach(delimiterRange => {
-      for (let i = delimiterRange[0]; i <= delimiterRange[1]; i++) {
-        const styledDelimiter = CharacterMetadata.applyStyle(
-          characterMetadataList.get(i),
-          strategy.delimiterStyle
-        );
-        characterMetadataList = characterMetadataList.set(i, styledDelimiter);
-      }
-    });
+    characterMetadataList = applyStyleRangesToCharacterMetadata(
+      strategy.delimiterStyle,
+      delimiterRanges,
+      characterMetadataList
+    );
   });
 
-  // Apply the array of CharacterMetadata to the content block
+  // Apply the list of CharacterMetadata to the content block
   return block.set('characterList', characterMetadataList);
 };
 
-const findDelimiterRanges = (text, delimiter) => {
-  const regex = new RegExp(delimiter);
+// Applies the provided style to the corresponding ranges of the character metadata
+const applyStyleRangesToCharacterMetadata = (
+  style,
+  ranges,
+  characterMetadataList
+) => {
+  let styledCharacterMetadataList = characterMetadataList;
+  ranges.forEach(range => {
+    for (let i = range[0]; i <= range[1]; i++) {
+      const styled = CharacterMetadata.applyStyle(
+        characterMetadataList.get(i),
+        style
+      );
+      styledCharacterMetadataList = styledCharacterMetadataList.set(i, styled);
+    }
+  });
+  return styledCharacterMetadataList;
 };
 
 const findArrayIntersection = (arr1, arr2) => {
@@ -191,4 +219,4 @@ const handleBeforeInput = (character, editorState, setEditorState) => {
   return 'handled';
 };
 
-export default createMarkdownDecoratorsPlugin;
+export default createLiveMarkdownPlugin;

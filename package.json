@@ -1,14 +1,17 @@
 {
-  "name": "draft-js-markdown-decorators-plugin",
+  "name": "draft-js-live-markdown-plugin",
   "version": "0.0.0",
-  "description": "A DraftJS plugin for adding decorators to markdown text while keeping all text inline.",
+  "description":
+    "A DraftJS plugin for styling/parsing markdown syntax while you type without removing delimiters.",
   "main": "dist/bundle.js",
   "scripts": {
     "build:dev": "webpack-cli",
-    "build:less": "lessc demo/src/styles/index.less demo/public/styles/index.css",
+    "build:less":
+      "lessc demo/src/styles/index.less demo/public/styles/index.css",
     "dev": "npm run build:dev && npm run build:less && browser-sync reload",
     "dev:watch": "npm run start | npm-watch dev",
-    "start": "node ./demo/server.js | browser-sync start --proxy 'localhost:3000' --files 'dist/*.js' 'demo/public/scripts/*.js' 'demo/public/scripts/*.less'"
+    "start":
+      "node ./demo/server.js | browser-sync start --proxy 'localhost:3000' --files 'dist/*.js' 'demo/public/scripts/*.js' 'demo/public/scripts/*.less'"
   },
   "watch": {
     "dev": "{src, demo}/**/*.{js, less}"
