@@ -33,6 +33,9 @@ const createBoldStyleStrategy = () => {
         boldDelimiterRanges = boldDelimiterRanges.concat(delimiterRange);
       });
       return boldDelimiterRanges;
+    },
+    delimiterStyles: {
+      opacity: 0.4
     }
   };
 };

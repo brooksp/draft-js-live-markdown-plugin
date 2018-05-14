@@ -9,6 +9,10 @@ const createOLDelimiterStyleStrategy = () => {
     findStyleRanges: text => {
       const olDelimiterRanges = findRangesWithRegex(text, olDelimiterRegex);
       return olDelimiterRanges;
+    },
+    styles: {
+      position: 'absolute',
+      transform: 'translateX(calc(-100% - 12px))'
     }
   };
 };

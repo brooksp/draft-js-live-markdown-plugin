@@ -22,36 +22,6 @@ import createHeadingDecorator from './decorators/createHeadingDecorator';
 // Utils
 import findRangesWithRegex from './utils/findRangesWithRegex';
 
-const customStyleMap = {
-  STRIKETHROUGH: {
-    textDecoration: 'line-through'
-  },
-  'STRIKETHROUGH-DELIMITER': {
-    opacity: 0.4,
-    textDecoration: 'none'
-  },
-  'BOLD-DELIMITER': {
-    opacity: 0.4
-  },
-  'ITALIC-DELIMITER': {
-    opacity: 0.4
-  },
-  'HEADING-DELIMITER': {
-    opacity: 0.4,
-    position: 'absolute',
-    transform: 'translateX(-100%)'
-  },
-  'UL-DELIMITER': {
-    fontWeight: 'bold',
-    position: 'absolute',
-    transform: 'translateX(calc(-100% - 12px))'
-  },
-  'OL-DELIMITER': {
-    position: 'absolute',
-    transform: 'translateX(calc(-100% - 12px))'
-  }
-};
-
 const createLiveMarkdownPlugin = function(config = {}) {
   const {
     inlineStyleStrategies = [
@@ -63,6 +33,16 @@ const createLiveMarkdownPlugin = function(config = {}) {
       createOLDelimiterStyleStrategy()
     ]
   } = config;
+
+  // Construct the editor style map from our inline style strategies
+  const customStyleMap = {};
+  inlineStyleStrategies.forEach(styleStrategy => {
+    if (styleStrategy.style && styleStrategy.styles)
+      customStyleMap[styleStrategy.style] = styleStrategy.styles;
+    if (styleStrategy.delimiterStyle && styleStrategy.delimiterStyles)
+      customStyleMap[styleStrategy.delimiterStyle] =
+        styleStrategy.delimiterStyles;
+  });
 
   return {
     decorators: [createHeadingDecorator()],

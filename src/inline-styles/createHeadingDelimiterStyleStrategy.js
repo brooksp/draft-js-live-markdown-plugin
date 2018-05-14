@@ -11,6 +11,11 @@ const createHeadingDelimiterStyleStrategy = () => {
         headingDelimiterRegex
       );
       return headingDelimiterRanges;
+    },
+    styles: {
+      opacity: 0.4,
+      position: 'absolute',
+      transform: 'translateX(-100%)'
     }
   };
 };

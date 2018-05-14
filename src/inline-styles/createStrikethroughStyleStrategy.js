@@ -28,6 +28,13 @@ const createStrikethroughStyleStrategy = () => {
         );
       });
       return strikethroughDelimiterRanges;
+    },
+    styles: {
+      textDecoration: 'line-through'
+    },
+    delimiterStyles: {
+      opacity: 0.4,
+      textDecoration: 'none'
     }
   };
 };

@@ -37,6 +37,9 @@ const createItalicStyleStrategy = () => {
         italicDelimiterRanges = italicDelimiterRanges.concat(delimiterRange);
       });
       return italicDelimiterRanges;
+    },
+    delimiterStyles: {
+      opacity: 0.4
     }
   };
 };

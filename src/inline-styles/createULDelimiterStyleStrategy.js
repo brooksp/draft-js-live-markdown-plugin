@@ -9,6 +9,11 @@ const createULDelimiterStyleStrategy = () => {
     findStyleRanges: text => {
       const ulDelimiterRanges = findRangesWithRegex(text, ulDelimiterRegex);
       return ulDelimiterRanges;
+    },
+    styles: {
+      fontWeight: 'bold',
+      position: 'absolute',
+      transform: 'translateX(calc(-100% - 12px))'
     }
   };
 };
