@@ -12,6 +12,7 @@ import { OrderedSet, Repeat, List } from 'immutable';
 import createBoldStyleStrategy from './inline-styles/createBoldStyleStrategy';
 import createItalicStyleStrategy from './inline-styles/createItalicStyleStrategy';
 import createStrikethroughStyleStrategy from './inline-styles/createStrikethroughStyleStrategy';
+import createHeadingDelimiterStyleStrategy from './inline-styles/createHeadingDelimiterStyleStrategy';
 
 // Block level decorators
 import createHeadingDecorator from './decorators/createHeadingDecorator';
@@ -32,6 +33,12 @@ const customStyleMap = {
   },
   'ITALIC-DELIMITER': {
     opacity: 0.4
+  },
+  'HEADING-DELIMITER': {
+    opacity: 0.4,
+    display: 'inline-block',
+    position: 'absolute',
+    transform: 'translateX(-100%)'
   }
 };
 
@@ -40,7 +47,8 @@ const createLiveMarkdownPlugin = function(config = {}) {
     inlineStyleStrategies = [
       createBoldStyleStrategy(),
       createItalicStyleStrategy(),
-      createStrikethroughStyleStrategy()
+      createStrikethroughStyleStrategy(),
+      createHeadingDelimiterStyleStrategy()
     ]
   } = config;
 
