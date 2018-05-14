@@ -2,7 +2,7 @@
   "name": "draft-js-live-markdown-plugin",
   "version": "0.0.0",
   "description":
-    "A DraftJS plugin for styling/parsing markdown syntax while you type without removing delimiters.",
+    "A DraftJS plugin for writing markdown that styles and parses on the fly.",
   "main": "dist/bundle.js",
   "scripts": {
     "build:dev": "webpack-cli",

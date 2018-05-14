@@ -48,7 +48,7 @@ module.exports = [
     },
     resolve: {
       alias: {
-        'draft-js-markdown-decorators-plugin': path.join(PLUGIN_DIR)
+        'draft-js-live-markdown-plugin': path.join(PLUGIN_DIR)
       }
     }
   }
