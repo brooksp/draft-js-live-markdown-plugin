@@ -1,5 +1,4 @@
 body {
-  background-color: #f1f1f1;
   margin: 0;
   font-family: 'Open Sans', sans-serif;
   font-size: 16px;
@@ -12,21 +11,22 @@ body {
   height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center;
 }
 
-.container {
+.demo {
   width: 100%;
   max-width: 700px;
-  height: calc(~'100vh - 150px');
-  background: white;
-  border: 1px solid #c5c5c5;
-  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-  .container__title {
+  .demo__title {
+    width: 100%;
     padding: 16px;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
     border-bottom: 1px solid #c5c5c5;
+  }
+
+  .demo__editor-container {
+    width: 100%;
   }
 }

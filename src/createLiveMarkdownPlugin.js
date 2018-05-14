@@ -36,7 +36,6 @@ const customStyleMap = {
   },
   'HEADING-DELIMITER': {
     opacity: 0.4,
-    display: 'inline-block',
     position: 'absolute',
     transform: 'translateX(-100%)'
   }

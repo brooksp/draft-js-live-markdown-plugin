@@ -11,7 +11,7 @@
     "dev": "npm run build:dev && npm run build:less && browser-sync reload",
     "dev:watch": "npm run start | npm-watch dev",
     "start":
-      "node ./demo/server.js | browser-sync start --proxy 'localhost:3000' --files 'dist/*.js' 'demo/public/scripts/*.js' 'demo/public/scripts/*.less'"
+      "node ./demo/server.js | browser-sync start --proxy 'localhost:3000' --files 'dist/*.js' 'demo/src/scripts/*.js' 'demo/src/styles/*.less'"
   },
   "watch": {
     "dev": "{src, demo}/**/*.{js, less}"
