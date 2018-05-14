@@ -83,7 +83,8 @@ const createLiveMarkdownPlugin = function(config = {}) {
 
       return newEditorState;
     },
-    customStyleMap: customStyleMap
+    customStyleMap: customStyleMap,
+    stripPastedStyles: true
   };
 };
 
