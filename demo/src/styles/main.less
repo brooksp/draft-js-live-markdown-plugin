@@ -1,8 +1,6 @@
 body {
   margin: 0;
   font-family: 'Open Sans', sans-serif;
-  font-size: 16px;
-  line-height: 24px;
   color: #292929;
 }
 
@@ -20,10 +18,15 @@ body {
   flex-direction: column;
   align-items: center;
 
-  .demo__title {
+  .demo__title-container {
     width: 100%;
-    padding: 16px;
     border-bottom: 1px solid #c5c5c5;
+
+    .demo__title {
+      padding: 16px 64px;
+      font-size: 16px;
+      line-height: 24px;
+    }
   }
 
   .demo__editor-container {
