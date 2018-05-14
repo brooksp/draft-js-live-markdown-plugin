@@ -14,6 +14,7 @@ import createItalicStyleStrategy from './inline-styles/createItalicStyleStrategy
 import createStrikethroughStyleStrategy from './inline-styles/createStrikethroughStyleStrategy';
 import createHeadingDelimiterStyleStrategy from './inline-styles/createHeadingDelimiterStyleStrategy';
 import createULDelimiterStyleStrategy from './inline-styles/createULDelimiterStyleStrategy';
+import createOLDelimiterStyleStrategy from './inline-styles/createOLDelimiterStyleStrategy';
 
 // Block level decorators
 import createHeadingDecorator from './decorators/createHeadingDecorator';
@@ -43,7 +44,11 @@ const customStyleMap = {
   'UL-DELIMITER': {
     fontWeight: 'bold',
     position: 'absolute',
-    transform: 'translateX(-24px)'
+    transform: 'translateX(calc(-100% - 12px))'
+  },
+  'OL-DELIMITER': {
+    position: 'absolute',
+    transform: 'translateX(calc(-100% - 12px))'
   }
 };
 
@@ -54,7 +59,8 @@ const createLiveMarkdownPlugin = function(config = {}) {
       createItalicStyleStrategy(),
       createStrikethroughStyleStrategy(),
       createHeadingDelimiterStyleStrategy(),
-      createULDelimiterStyleStrategy()
+      createULDelimiterStyleStrategy(),
+      createOLDelimiterStyleStrategy()
     ]
   } = config;
 
