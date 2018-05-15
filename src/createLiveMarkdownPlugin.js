@@ -15,12 +15,10 @@ import createStrikethroughStyleStrategy from './inline-styles/createStrikethroug
 import createHeadingDelimiterStyleStrategy from './inline-styles/createHeadingDelimiterStyleStrategy';
 import createULDelimiterStyleStrategy from './inline-styles/createULDelimiterStyleStrategy';
 import createOLDelimiterStyleStrategy from './inline-styles/createOLDelimiterStyleStrategy';
+import createQuoteStyleStrategy from './inline-styles/createQuoteStyleStrategy';
 
 // Block level decorators
 import createHeadingDecorator from './decorators/createHeadingDecorator';
-
-// Utils
-import findRangesWithRegex from './utils/findRangesWithRegex';
 
 const createLiveMarkdownPlugin = function(config = {}) {
   const {
@@ -30,7 +28,8 @@ const createLiveMarkdownPlugin = function(config = {}) {
       createStrikethroughStyleStrategy(),
       createHeadingDelimiterStyleStrategy(),
       createULDelimiterStyleStrategy(),
-      createOLDelimiterStyleStrategy()
+      createOLDelimiterStyleStrategy(),
+      createQuoteStyleStrategy()
     ]
   } = config;
 
