@@ -16,6 +16,7 @@ import createHeadingDelimiterStyleStrategy from './inline-styles/createHeadingDe
 import createULDelimiterStyleStrategy from './inline-styles/createULDelimiterStyleStrategy';
 import createOLDelimiterStyleStrategy from './inline-styles/createOLDelimiterStyleStrategy';
 import createQuoteStyleStrategy from './inline-styles/createQuoteStyleStrategy';
+import createInlineCodeStyleStrategy from './inline-styles/createInlineCodeStyleStrategy';
 
 // Block level decorators
 import createHeadingDecorator from './decorators/createHeadingDecorator';
@@ -29,7 +30,8 @@ const createLiveMarkdownPlugin = function(config = {}) {
       createHeadingDelimiterStyleStrategy(),
       createULDelimiterStyleStrategy(),
       createOLDelimiterStyleStrategy(),
-      createQuoteStyleStrategy()
+      createQuoteStyleStrategy(),
+      createInlineCodeStyleStrategy()
     ]
   } = config;
 
