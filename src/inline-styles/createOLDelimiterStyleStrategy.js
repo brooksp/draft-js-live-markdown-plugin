@@ -6,7 +6,8 @@ const createOLDelimiterStyleStrategy = () => {
 
   return {
     style: 'OL-DELIMITER',
-    findStyleRanges: text => {
+    findStyleRanges: block => {
+      const text = block.getText();
       const olDelimiterRanges = findRangesWithRegex(text, olDelimiterRegex);
       return olDelimiterRanges;
     },

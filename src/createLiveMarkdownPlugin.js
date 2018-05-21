@@ -18,6 +18,9 @@ import createOLDelimiterStyleStrategy from './inline-styles/createOLDelimiterSty
 import createQuoteStyleStrategy from './inline-styles/createQuoteStyleStrategy';
 import createInlineCodeStyleStrategy from './inline-styles/createInlineCodeStyleStrategy';
 
+// Block type handlers
+import createCodeBlockStrategy from './block-types/createCodeBlockStrategy';
+
 // Block level decorators
 import createHeadingDecorator from './decorators/createHeadingDecorator';
 
@@ -32,7 +35,8 @@ const createLiveMarkdownPlugin = function(config = {}) {
       createOLDelimiterStyleStrategy(),
       createQuoteStyleStrategy(),
       createInlineCodeStyleStrategy()
-    ]
+    ],
+    blockTypeStrategies = [createCodeBlockStrategy()]
   } = config;
 
   // Construct the editor style map from our inline style strategies
@@ -44,6 +48,16 @@ const createLiveMarkdownPlugin = function(config = {}) {
       customStyleMap[styleStrategy.delimiterStyle] =
         styleStrategy.delimiterStyles;
   });
+
+  // Construct the block style fn
+  const blockStyleMap = blockTypeStrategies.reduce((map, blockStrategy) => {
+    map[blockStrategy.type] = blockStrategy.className;
+    return map;
+  }, {});
+  const blockStyleFn = block => {
+    const blockType = block.getType();
+    return blockStyleMap[blockType];
+  };
 
   return {
     decorators: [createHeadingDecorator()],
@@ -72,9 +86,19 @@ const createLiveMarkdownPlugin = function(config = {}) {
         );
       }
 
-      const newContentState = contentState.merge({
+      let newContentState = contentState.merge({
         blockMap: newBlockMap
       });
+
+      // Now maintain the block types
+      const maintainBlockTypes = (cs, blockTypeStrategy) => {
+        return blockTypeStrategy.mapBlockType(cs);
+      };
+      newContentState = blockTypeStrategies.reduce(
+        maintainBlockTypes,
+        newContentState
+      );
+
       let newEditorState = EditorState.push(
         editorState,
         newContentState,
@@ -85,6 +109,7 @@ const createLiveMarkdownPlugin = function(config = {}) {
       return newEditorState;
     },
     customStyleMap: customStyleMap,
+    blockStyleFn: blockStyleFn,
     stripPastedStyles: true
   };
 };
@@ -106,9 +131,9 @@ const mapInlineStyles = (block, strategies) => {
   // Evaluate block text with each style strategy and apply styles to matching
   // ranges of text and delimiters
   strategies.forEach(strategy => {
-    const styleRanges = strategy.findStyleRanges(blockText);
+    const styleRanges = strategy.findStyleRanges(block);
     const delimiterRanges = strategy.findDelimiterRanges
-      ? strategy.findDelimiterRanges(blockText, styleRanges)
+      ? strategy.findDelimiterRanges(block, styleRanges)
       : [];
 
     characterMetadataList = applyStyleRangesToCharacterMetadata(

@@ -6,7 +6,8 @@ const createULDelimiterStyleStrategy = () => {
 
   return {
     style: 'UL-DELIMITER',
-    findStyleRanges: text => {
+    findStyleRanges: block => {
+      const text = block.getText();
       const ulDelimiterRanges = findRangesWithRegex(text, ulDelimiterRegex);
       return ulDelimiterRanges;
     },

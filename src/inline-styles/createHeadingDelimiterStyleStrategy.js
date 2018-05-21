@@ -5,7 +5,8 @@ const createHeadingDelimiterStyleStrategy = () => {
 
   return {
     style: 'HEADING-DELIMITER',
-    findStyleRanges: text => {
+    findStyleRanges: block => {
+      const text = block.getText();
       const headingDelimiterRanges = findRangesWithRegex(
         text,
         headingDelimiterRegex

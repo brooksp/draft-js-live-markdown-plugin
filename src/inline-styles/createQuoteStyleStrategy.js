@@ -8,11 +8,13 @@ const createQuoteStyleStrategy = () => {
   return {
     style: 'QUOTE',
     delimiterStyle: 'QUOTE-DELIMITER',
-    findStyleRanges: text => {
+    findStyleRanges: block => {
+      const text = block.getText();
       const quoteRanges = findRangesWithRegex(text, quoteRegex);
       return quoteRanges;
     },
-    findDelimiterRanges: (text, styleRanges) => {
+    findDelimiterRanges: (block, styleRanges) => {
+      const text = block.getText();
       let quoteDelimiterRanges = [];
       styleRanges.forEach(styleRange => {
         const delimiterRange = findRangesWithRegex(

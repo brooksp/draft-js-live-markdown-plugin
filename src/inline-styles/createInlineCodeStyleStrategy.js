@@ -1,14 +1,15 @@
 import findRangesWithRegex from '../utils/findRangesWithRegex';
 
 const createInlineCodeStyleStrategy = () => {
-  const codeRegex = /(`)(.+?)(`)/g;
+  const codeRegex = /(`)([^\n\r`]+?)(`)/g;
 
   return {
     style: 'INLINE-CODE',
-    findStyleRanges: text => {
-      // Return an array of arrays containing start and end indices for ranges of
-      // text that should be crossed out
-      // e.g. [[0,6], [10,20]]
+    findStyleRanges: block => {
+      // Don't allow inline code inside of code blocks
+      if (block.getType() === 'code-block') return [];
+
+      const text = block.getText();
       const codeRanges = findRangesWithRegex(text, codeRegex);
       return codeRanges;
     },
