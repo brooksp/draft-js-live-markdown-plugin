@@ -61,7 +61,23 @@ const createLiveMarkdownPlugin = function(config = {}) {
 
   return {
     decorators: [createHeadingDecorator()],
+    // We must handle the maintenance of block types and inline styles on changes.
+    // To make sure the code is efficient we only perform maintenance on content
+    // blocks that have been changed. We also only perform maintenance for change
+    // types that result in actual text changes (ignore cursing through text, etc).
     onChange: (editorState, { setEditorState }) => {
+      // Bypass maintenance if text was not changed
+      const lastChangeType = editorState.getLastChangeType();
+      const bypassOnChangeTypes = [
+        'adjust-depth',
+        'apply-entity',
+        'change-block-data',
+        'change-block-type',
+        'change-inline-style',
+        'maintain-markdown'
+      ];
+      if (bypassOnChangeTypes.includes(lastChangeType)) return editorState;
+
       // Maintain the inline styles after changes are made
       const selection = editorState.getSelection();
       const blockKey = selection.getStartKey();
@@ -74,7 +90,6 @@ const createLiveMarkdownPlugin = function(config = {}) {
 
       // If enter was pressed (or the block was otherwise split) we must maintain
       // styles in the previous block as well
-      const lastChangeType = editorState.getLastChangeType();
       if (lastChangeType === 'split-block') {
         const newPrevBlock = mapInlineStyles(
           contentState.getBlockBefore(blockKey),
@@ -102,7 +117,7 @@ const createLiveMarkdownPlugin = function(config = {}) {
       let newEditorState = EditorState.push(
         editorState,
         newContentState,
-        'insert-characters'
+        'maintain-markdown'
       );
       newEditorState = EditorState.forceSelection(newEditorState, selection);
 
