@@ -4,7 +4,7 @@ import findRangesWithRegex from '../utils/findRangesWithRegex';
 
 const createCodeBlockStrategy = () => {
   const blockType = 'code-block';
-  const codeBlockRegex = /^```/g;
+  const CODE_BLOCK_REGEX = /^```/g;
 
   return {
     type: blockType,
@@ -24,7 +24,7 @@ const createCodeBlockStrategy = () => {
         const text = block.getText();
         const codeBlockDelimiterRanges = findRangesWithRegex(
           text,
-          codeBlockRegex
+          CODE_BLOCK_REGEX
         );
         const precededByDelimiter = tempKeys.length > 0;
 

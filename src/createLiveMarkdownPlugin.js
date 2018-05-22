@@ -20,9 +20,7 @@ import createInlineCodeStyleStrategy from './inline-styles/createInlineCodeStyle
 
 // Block type handlers
 import createCodeBlockStrategy from './block-types/createCodeBlockStrategy';
-
-// Block level decorators
-import createHeadingDecorator from './decorators/createHeadingDecorator';
+import createHeadingBlockStrategy from './block-types/createHeadingBlockStrategy';
 
 const createLiveMarkdownPlugin = function(config = {}) {
   const {
@@ -36,7 +34,10 @@ const createLiveMarkdownPlugin = function(config = {}) {
       createQuoteStyleStrategy(),
       createInlineCodeStyleStrategy()
     ],
-    blockTypeStrategies = [createCodeBlockStrategy()]
+    blockTypeStrategies = [
+      createCodeBlockStrategy(),
+      createHeadingBlockStrategy()
+    ]
   } = config;
 
   // Construct the editor style map from our inline style strategies
@@ -60,7 +61,6 @@ const createLiveMarkdownPlugin = function(config = {}) {
   };
 
   return {
-    decorators: [createHeadingDecorator()],
     // We must handle the maintenance of block types and inline styles on changes.
     // To make sure the code is efficient we only perform maintenance on content
     // blocks that have been changed. We also only perform maintenance for change
