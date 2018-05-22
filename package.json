@@ -1,17 +1,14 @@
 {
   "name": "draft-js-live-markdown-plugin",
   "version": "0.0.0",
-  "description":
-    "A DraftJS plugin for writing markdown that styles and parses on the fly.",
+  "description": "A DraftJS plugin for writing markdown that styles and parses on the fly.",
   "main": "dist/bundle.js",
   "scripts": {
     "build:dev": "webpack-cli",
-    "build:less":
-      "lessc demo/src/styles/index.less demo/public/styles/index.css",
+    "build:less": "lessc demo/src/styles/index.less demo/public/styles/index.css",
     "dev": "npm run build:dev && npm run build:less && browser-sync reload",
     "dev:watch": "npm run start | npm-watch dev",
-    "start":
-      "node ./demo/server.js | browser-sync start --proxy 'localhost:3000' --files 'dist/*.js' 'demo/src/scripts/*.js' 'demo/src/styles/*.less'"
+    "start": "node ./demo/server.js | browser-sync start --proxy 'localhost:3000' --files 'dist/*.js' 'demo/src/scripts/*.js' 'demo/src/styles/*.less'"
   },
   "watch": {
     "dev": "{src, demo}/**/*.{js, less}"
@@ -25,7 +22,7 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
-    "browser-sync": "^2.24.1",
+    "browser-sync": "^2.24.4",
     "eslint": "^4.19.1",
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-import": "^2.11.0",
@@ -34,15 +31,17 @@
     "eslint-plugin-react": "^7.7.0",
     "express": "^4.16.3",
     "less": "^3.0.2",
-    "less-middleware": "^2.2.1",
+    "less-middleware": "^3.0.0",
     "npm-watch": "^0.3.0",
     "webpack": "^4.6.0",
-    "webpack-cli": "^2.0.14"
+    "webpack-cli": "^2.1.3"
   },
   "dependencies": {
     "draft-js": "^0.10.5",
     "draft-js-plugins-editor": "^2.0.4",
+    "draft-js-prism-plugin": "^0.1.3",
     "immutable": "^3.8.2",
+    "prismjs": "^1.14.0",
     "react": "^16.3.1",
     "react-dom": "^16.3.1"
   }
