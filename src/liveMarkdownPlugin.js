@@ -9,18 +9,18 @@ import {
 import { OrderedSet, Repeat, List } from 'immutable';
 
 // Inline style handlers
-import createBoldStyleStrategy from './inline-styles/createBoldStyleStrategy';
-import createItalicStyleStrategy from './inline-styles/createItalicStyleStrategy';
-import createStrikethroughStyleStrategy from './inline-styles/createStrikethroughStyleStrategy';
-import createHeadingDelimiterStyleStrategy from './inline-styles/createHeadingDelimiterStyleStrategy';
-import createULDelimiterStyleStrategy from './inline-styles/createULDelimiterStyleStrategy';
-import createOLDelimiterStyleStrategy from './inline-styles/createOLDelimiterStyleStrategy';
-import createQuoteStyleStrategy from './inline-styles/createQuoteStyleStrategy';
-import createInlineCodeStyleStrategy from './inline-styles/createInlineCodeStyleStrategy';
+import createBoldStyleStrategy from './inline-styles/boldStyleStrategy';
+import createItalicStyleStrategy from './inline-styles/italicStyleStrategy';
+import createStrikethroughStyleStrategy from './inline-styles/strikethroughStyleStrategy';
+import createHeadingDelimiterStyleStrategy from './inline-styles/headingDelimiterStyleStrategy';
+import createULDelimiterStyleStrategy from './inline-styles/ulDelimiterStyleStrategy';
+import createOLDelimiterStyleStrategy from './inline-styles/olDelimiterStyleStrategy';
+import createQuoteStyleStrategy from './inline-styles/quoteStyleStrategy';
+import createInlineCodeStyleStrategy from './inline-styles/inlineCodeStyleStrategy';
 
 // Block type handlers
-import createCodeBlockStrategy from './block-types/createCodeBlockStrategy';
-import createHeadingBlockStrategy from './block-types/createHeadingBlockStrategy';
+import createCodeBlockStrategy from './block-types/codeBlockStrategy';
+import createHeadingBlockStrategy from './block-types/headingBlockStrategy';
 
 const createLiveMarkdownPlugin = function(config = {}) {
   const {
