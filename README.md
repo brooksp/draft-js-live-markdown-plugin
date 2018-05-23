@@ -1,6 +1,7 @@
 # draft-js-live-markdown-plugin
 
 [![Build Status](https://travis-ci.org/brooksp/draft-js-live-markdown-plugin.svg?branch=master)](https://travis-ci.org/brooksp/draft-js-live-markdown-plugin)
+[![dependencies Status](https://david-dm.org/brooksp/draft-js-live-markdown-plugin/status.svg)](https://david-dm.org/brooksp/draft-js-live-markdown-plugin)
 
 A [DraftJS](https://facebook.github.io/draft-js/) plugin that styles markdown on the fly without parsing out delimiters. Think of it as markdown syntax highlighting. The plugin works with the popular [DraftJS Plugins](https://github.com/draft-js-plugins/draft-js-plugins) editor. The parsing and styling strategies are configurable to allow for whatever flavor of markdown you are willing to implement beyond the default which is based on Github markdown.
 
