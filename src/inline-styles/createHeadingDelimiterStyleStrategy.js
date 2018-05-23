@@ -6,6 +6,9 @@ const createHeadingDelimiterStyleStrategy = () => {
   return {
     style: 'HEADING-DELIMITER',
     findStyleRanges: block => {
+      // Skip the text search if the block isn't a header block
+      if (block.getType().indexOf('header') < 0) return [];
+
       const text = block.getText();
       const headingDelimiterRanges = findRangesWithRegex(
         text,
