@@ -125,19 +125,6 @@ const maintainEditorState = (
   return newEditorState;
 };
 
-// Takes a shotgun approach that updates the block types and inline styles of all
-// content blocks in the editor
-// Useful when we don't necessarily know what blocks have been modified, e.g. when
-// text has been pasted into the editor
-const maintainWholeEditorState = (
-  editorState,
-  { blockTypeStrategies, inlineStyleStrategies }
-) => {
-  const contentState = editorState.getCurrentContent();
-  const blockMap = contentState.getBlockMap();
-  blockMap.forEach(block => {});
-};
-
 // Takes a ContentState and returns a ContentState with block types and inline styles
 // applied or removed as necessary
 const maintainBlockTypes = (contentState, blockTypeStrategies) => {
@@ -160,9 +147,9 @@ const maintainInlineStyles = (
   const blockMap = contentState.getBlockMap();
   let newBlockMap = blockMap;
 
-  // If text has been pasted (potentially modifying/creating multiple blocks) we
-  // must maintain the styles for all content blocks
-  if (lastChangeType === 'insert-fragment') {
+  // If text has been pasted (potentially modifying/creating multiple blocks) or
+  // the editor is new we must maintain the styles for all content blocks
+  if (lastChangeType === 'insert-fragment' || !lastChangeType) {
     blockMap.forEach((block, blockKey) => {
       const newBlock = mapInlineStyles(block, inlineStyleStrategies);
       newBlockMap = newBlockMap.set(blockKey, newBlock);
