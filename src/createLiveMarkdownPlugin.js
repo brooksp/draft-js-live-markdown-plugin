@@ -66,6 +66,8 @@ const createLiveMarkdownPlugin = function(config = {}) {
     // blocks that have been changed. We only perform maintenance for change types
     // that result in actual text changes (ignore cursing through text, etc).
     onChange: editorState => {
+      // if (editorState.getLastChangeType() === 'insert-fragment')
+      //   return maintainWholeEditorState();
       return maintainEditorState(editorState, {
         blockTypeStrategies,
         inlineStyleStrategies
@@ -77,10 +79,13 @@ const createLiveMarkdownPlugin = function(config = {}) {
   };
 };
 
-// Takes an EditorState and returns a ContentState updated with
-const maintainEditorState = (editorState, config) => {
-  const { blockTypeStrategies, inlineStyleStrategies } = config;
-
+// Takes an EditorState and returns a ContentState updated with block types and
+// inline styles according to the provided strategies
+// Takes a targeted approach that only updates the modified block/blocks
+const maintainEditorState = (
+  editorState,
+  { blockTypeStrategies, inlineStyleStrategies }
+) => {
   // Bypass maintenance if text was not changed
   const lastChangeType = editorState.getLastChangeType();
   const bypassOnChangeTypes = [
@@ -120,6 +125,19 @@ const maintainEditorState = (editorState, config) => {
   return newEditorState;
 };
 
+// Takes a shotgun approach that updates the block types and inline styles of all
+// content blocks in the editor
+// Useful when we don't necessarily know what blocks have been modified, e.g. when
+// text has been pasted into the editor
+const maintainWholeEditorState = (
+  editorState,
+  { blockTypeStrategies, inlineStyleStrategies }
+) => {
+  const contentState = editorState.getCurrentContent();
+  const blockMap = contentState.getBlockMap();
+  blockMap.forEach(block => {});
+};
+
 // Takes a ContentState and returns a ContentState with block types and inline styles
 // applied or removed as necessary
 const maintainBlockTypes = (contentState, blockTypeStrategies) => {
@@ -128,24 +146,35 @@ const maintainBlockTypes = (contentState, blockTypeStrategies) => {
   }, contentState);
 };
 
-// Takes a ContentState (and EditorState for getting the selection) and returns
-// a ContentState with inline styles applied or removed as necessary
+// Takes a ContentState (and EditorState for getting the selection and change type)
+// and returns a ContentState with inline styles applied or removed as necessary
 const maintainInlineStyles = (
   contentState,
   editorState,
   inlineStyleStrategies
 ) => {
-  const selection = editorState.getSelection();
-  const blockKey = selection.getStartKey();
-  const block = contentState.getBlockForKey(blockKey);
+  const lastChangeType = editorState.getLastChangeType();
+  let selection = editorState.getSelection();
+  let blockKey = selection.getStartKey();
+  let block = contentState.getBlockForKey(blockKey);
   const blockMap = contentState.getBlockMap();
+  let newBlockMap = blockMap;
 
-  const newBlock = mapInlineStyles(block, inlineStyleStrategies);
-  let newBlockMap = blockMap.set(blockKey, newBlock);
+  // If text has been pasted (potentially modifying/creating multiple blocks) we
+  // must maintain the styles for all content blocks
+  if (lastChangeType === 'insert-fragment') {
+    blockMap.forEach((block, blockKey) => {
+      const newBlock = mapInlineStyles(block, inlineStyleStrategies);
+      newBlockMap = newBlockMap.set(blockKey, newBlock);
+    });
+  } else {
+    const newBlock = mapInlineStyles(block, inlineStyleStrategies);
+    newBlockMap = newBlockMap.set(blockKey, newBlock);
+  }
 
   // If enter was pressed (or the block was otherwise split) we must maintain
   // styles in the previous block as well
-  if (editorState.getLastChangeType() === 'split-block') {
+  if (lastChangeType === 'split-block') {
     const newPrevBlock = mapInlineStyles(
       contentState.getBlockBefore(blockKey),
       inlineStyleStrategies
