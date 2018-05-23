@@ -110,3 +110,7 @@ Use `back-ticks` to delimit inline code.
 ```
 > There is no "i" in collaboraton.
 ```
+
+## Project Status
+
+Currently adding unit tests before publishing on npm.
