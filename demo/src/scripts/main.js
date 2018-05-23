@@ -7,9 +7,6 @@ import DemoEditor from './DemoEditor';
 if (typeof document !== 'undefined') {
   ReactDOM.render(
     <div className="demo">
-      <div className="demo__title-container">
-        <div className="demo__title">Enter some Markdown below:</div>
-      </div>
       <div className="demo__editor-container">
         <DemoEditor />
       </div>
