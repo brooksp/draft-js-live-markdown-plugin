@@ -9,6 +9,8 @@ A [DraftJS](https://facebook.github.io/draft-js/) plugin that styles markdown on
 
 The aim of this plugin is to provide a better markdown experience by displaying rich markdown text without mutating the plain text. We can add styling to delimiters to allow reducing opacity of bold delimiters, displaying heading delimiters in the gutter to keep the actual header text at the baseline, etc. to improve the look and feel of the editor. Users are able to eliminate the need for two separate (parsed and unparsed) views to see the result of the markdown they write.
 
+[Check out the live demo.](https://facebook.github.io/draft-js/)
+
 ## Usage
 
 Simply create the live markdown plugin and include it as a plugin of the `draft-js-plugins-editor` editor. Create and include a Prism plugin as well to be able to take advantage of syntax highlighting in code blocks.
