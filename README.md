@@ -8,6 +8,8 @@ The aim of this plugin is to provide a better markdown experience by displaying 
 
 ## Usage
 
+Simply create the live markdown plugin and include it as a plugin of the `draft-js-plugins-editor` editor. Create and include a Prism plugin as well to be able to take advantage of syntax highlighting in code blocks.
+
 ```javascript
 import React, { Component } from 'react';
 import { EditorState, ContentState } from 'draft-js';
